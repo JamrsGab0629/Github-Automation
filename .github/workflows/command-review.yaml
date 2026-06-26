@@ -7,10 +7,10 @@ on:
 permissions:
   issues: write
   pull-requests: write
-  
+
 jobs:
   run-review:
-    # Trigger if the comment starts with '/review ' or matches exactly '/review'
+   
     if: startsWith(github.event.comment.body, '/review') && github.event.comment.user.type != 'Bot'
     runs-on: ubuntu-latest
 
@@ -30,7 +30,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ISSUE_NUM: ${{ github.event.issue.number }}
-          # Pass the full comment body text to Python
+          
           COMMENT_BODY: ${{ github.event.comment.body }}
         run: python script/review_command.py
 

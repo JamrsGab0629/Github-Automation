@@ -3,12 +3,12 @@ import subprocess
 from google import genai
 
 def get_git_diff():
-    # Grabs the changes made in the very last commit push
+   
     result = subprocess.run(["git", "diff", "HEAD~1", "HEAD"], capture_output=True, text=True)
     return result.stdout
 
 def clean_diff(diff_text):
-    #
+    
     filtered_lines = []
     skip_file = False
     for line in diff_text.split('\n'):
@@ -42,7 +42,7 @@ def main():
         contents=prompt,
     )
     
-    # Write the AI summary to a text file for GitHub Actions to read
+   
     with open("summary.txt", "w", encoding="utf-8") as f:
         f.write(response.text)
 
