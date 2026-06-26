@@ -4,6 +4,10 @@ on:
   issue_comment:
     types: [created]
 
+permissions:
+  issues: write
+  pull-requests: write
+  
 jobs:
   run-review:
     # Trigger if the comment starts with '/review ' or matches exactly '/review'
