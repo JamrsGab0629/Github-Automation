@@ -8,7 +8,7 @@ def get_git_diff():
     return result.stdout
 
 def clean_diff(diff_text):
-    # Filter out massive junk configurations or lockfiles to save free tokens
+    #
     filtered_lines = []
     skip_file = False
     for line in diff_text.split('\n'):
@@ -29,7 +29,7 @@ def main():
         print("No meaningful source code changes detected.")
         return
 
-    # Securely fetch the API key from environment variables
+   
     client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
     
     prompt = (
