@@ -33,6 +33,6 @@ jobs:
       - name: Post Review Comment
         if: success()
         run: |
-          gh issue comment $ISSUE_NUM --body-file review_result.txt
+          gh issue comment ${{ github.event.issue.number }} --body-file review_result.txt
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
