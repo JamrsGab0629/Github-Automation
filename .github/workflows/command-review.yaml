@@ -1,0 +1,38 @@
+name: AI Command Code Review
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  run-review:
+    # Trigger if the comment starts with '/review ' or matches exactly '/review'
+    if: startsWith(github.event.comment.body, '/review') && github.event.comment.user.type != 'Bot'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Google Gen AI SDK
+        run: pip install google-genai
+
+      - name: Run Python Command Review
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
+          # Pass the full comment body text to Python
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: python script/review_command.py
+
+      - name: Post Review Comment
+        if: success()
+        run: |
+          gh issue comment $ISSUE_NUM --body-file review_result.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
