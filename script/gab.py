@@ -1,1 +1,3 @@
-print("tanginamo xep")
+print("pogi ni julian")
+
+
