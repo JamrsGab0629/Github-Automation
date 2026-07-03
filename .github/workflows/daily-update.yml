@@ -1,0 +1,48 @@
+name: 🗓️ Daily Summary & On-Demand Update
+
+on:
+  schedule:
+    # Triggers automatically everyday at 6:13 AM PHT (22:13 UTC)
+    - cron: '13 22 * * *'
+  issue_comment:
+    types: [created]
+
+jobs:
+  generate-summary:
+    # Runs automatically if scheduled, OR manually if a comment strictly matches /update
+    if: |
+      github.event_name == 'schedule' || 
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/update'))
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository Files
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetches full history so git log can compare timestamps
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: pip install google-genai
+
+      - name: Run AI Summary Generation Script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python script/generate_digest.py
+
+      - name: Dispatch Update to Gmail Inbox
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: "📊 Project Status Report: ${{ github.event.repository.name }}"
+          to: ${{ secrets.GMAIL_USERNAME }} # Sends the email straight to yourself
+          from: GitHub Project Bot
+          body: file://digest_output.txt
