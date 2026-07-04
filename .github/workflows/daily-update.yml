@@ -1,4 +1,4 @@
-name: 🗓️ Daily Summary & On-Demand Update
+name:  Daily Summary & On-Demand Update
 
 on:
   schedule:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   generate-summary:
-    # Runs automatically if scheduled, OR manually if a comment strictly matches /update
+   
     if: |
       github.event_name == 'schedule' || 
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/update'))
@@ -43,6 +43,6 @@ jobs:
           username: ${{ secrets.GMAIL_USERNAME }}
           password: ${{ secrets.GMAIL_APP_PASSWORD }}
           subject: "📊 Project Status Report: ${{ github.event.repository.name }}"
-          to: ${{ secrets.GMAIL_USERNAME }} # Sends the email straight to yourself
+          to: ${{ secrets.GMAIL_USERNAME }} 
           from: GitHub Project Bot
           body: file://digest_output.txt
